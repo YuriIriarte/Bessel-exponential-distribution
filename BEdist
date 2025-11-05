@@ -1,0 +1,7 @@
+# 
+
+dBE <- function(y, m, s){
+  a = 2*m/s
+  b = s
+    1/(a*b*besselK(a,-1))*exp(-y/b-a^2*b/(4*y))
+}
