@@ -1,0 +1,42 @@
+library(rmutil) # For the computation of the Generalized Inverse Gaussian distribution
+
+# --------------------------------
+# Probability density function ---
+# --------------------------------
+
+dBE <- function(x,mu,sigma){
+  m = mu
+  s = sigma/(2*mu^2) 
+    dginvgauss(x,m,s,1)
+}
+
+# ------------------------------------
+# Cumulative distribution function ---
+# ------------------------------------
+
+pBE <- function(y,mu,sigma){
+  m = mu
+  s = sigma/(2*mu^2) 
+    pginvgauss(y,m,s,1)
+}
+
+# ---------------------
+# Quantile function ---
+# ---------------------
+
+qBE <- function(p,mu,sigma){
+  m = mu
+  s = sigma/(2*mu^2) 
+    qginvgauss(p,m,s,1)
+}
+
+# ---------------------------------------
+# Generation of pseudo-random numbers ---
+# ---------------------------------------
+
+rBE <- function(n,mu,sigma){
+  m = mu
+  s = sigma/(2*mu^2) 
+  u = runif(n)
+    qginvgauss(u,m,s,1)
+}
