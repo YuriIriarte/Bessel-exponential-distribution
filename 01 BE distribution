@@ -35,8 +35,6 @@ qBE <- function(p,mu,sigma){
 # ---------------------------------------
 
 rBE <- function(n,mu,sigma){
-  m = mu
-  s = sigma/(2*mu^2) 
   u = runif(n)
-    qginvgauss(u,m,s,1)
+    qBE(u,mu,sigma)
 }
