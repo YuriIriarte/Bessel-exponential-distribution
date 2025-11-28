@@ -4,10 +4,10 @@ library(rmutil) # For the computation of the Generalized Inverse Gaussian distri
 # Probability density function ---
 # --------------------------------
 
-dBE <- function(x,mu,sigma){
+dBE <- function(x,mu,sigma,log=FALSE){
   m = mu
-  s = sigma/(2*mu^2) 
-    dginvgauss(x,m,s,1)
+  s = sigma/(2*mu^2)
+    dginvgauss(x,m,s,1,log=log)
 }
 
 # ------------------------------------
