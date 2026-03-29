@@ -1,0 +1,202 @@
+library(ggplot2)
+library(dplyr)
+
+# -----------------------
+# BE density function ---
+# -----------------------
+
+mu <- 5
+sigma_values <- c(1,2,4,10)
+x_vals <- seq(0.01,15,length.out = 500)
+
+data <- expand.grid(x=x_vals, sigma=sigma_values) %>%
+  mutate(density = dBE(x,mu,sigma))
+
+ggplot(data, aes(x = x, y = density, color = factor(sigma), linetype = factor(sigma))) +
+  geom_line(size = 1.2) +
+  geom_vline(xintercept = mu, linetype = "dashed", color = "grey", size = 0.5) +
+  geom_text(aes(x = mu, y = 0.03, label = "mode"), inherit.aes = FALSE) +
+  geom_text(aes(x = mu, y = 0.015, label = "mu == 5"), inherit.aes = FALSE, parse = TRUE) +
+  scale_color_manual(name = expression(sigma), values = c("black", "red", "blue", "green")) +
+  scale_linetype_manual(name = expression(sigma), values = 1:4) +
+  labs(x = "t", y = "Density function") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.title = element_text(size = 18),
+    legend.position = c(0.86, 0.8), 
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5),
+    axis.text = element_text(size = 14)
+  )
+
+sigma <- 1
+mu_values <- c(1,4,8)
+
+x_vals <- seq(0.01,10,length.out = 500)
+data <- expand.grid(x=x_vals, mu=mu_values) %>%
+  mutate(density = dBE(x,mu,sigma))
+
+ggplot(data, aes(x = x, y = density, color = factor(mu), linetype = factor(mu))) +
+  geom_line(size = 1.2) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "grey", size = 0.5) +
+  geom_vline(xintercept = 4, linetype = "dashed", color = "grey", size = 0.5) +
+  geom_vline(xintercept = 8, linetype = "dashed", color = "grey", size = 0.5) +
+  geom_text(data = data.frame(mu = c(1, 4, 8)),
+            aes(x = mu, y = 0.15, label = "mode"),
+            inherit.aes = FALSE) +
+  annotate("text", x = 1, y = 0.12, label = "mu == 1", parse = TRUE) +
+  annotate("text", x = 4, y = 0.12, label = "mu == 4", parse = TRUE) +
+  annotate("text", x = 8, y = 0.12, label = "mu == 8", parse = TRUE) +
+  scale_color_manual(name = expression(mu), values = c("black", "red", "blue", "green")) +
+  scale_linetype_manual(name = expression(mu), values = 1:4) +
+  labs(x = "t", y = "Density function") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.title = element_text(size = 18),
+    legend.position = c(0.86, 0.8),
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5),
+    axis.text = element_text(size = 14)
+  )
+
+# ------------------------------
+# BE cumulative distribution ---
+# ------------------------------
+
+mu <- 5
+sigma_values <- c(1,2,4,10)
+x_vals <- seq(0.01,20,length.out = 500)
+
+data <- expand.grid(x=x_vals, sigma=sigma_values) %>%
+  mutate(density = pBE(x,mu,sigma))
+
+ggplot(data, aes(x = x, y = density, color = factor(sigma), linetype = factor(sigma))) +
+  geom_line(size = 1.2) +
+  scale_color_manual(name = expression(sigma), values = c("black", "red", "blue", "green")) +
+  scale_linetype_manual(name = expression(sigma), values = 1:4) +
+  labs(x = "t", y = "Distribution function") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.title = element_text(size = 18),
+    legend.position = c(0.86, 0.2), 
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5),
+    axis.text = element_text(size = 14)
+  )
+
+sigma <- 1
+mu_values <- c(1,4,8)
+x_vals <- seq(0.01,20,length.out = 500)
+
+data <- expand.grid(x=x_vals, mu=mu_values) %>%
+  mutate(density = pBE(x,mu,sigma))
+
+ggplot(data, aes(x = x, y = density, color = factor(mu), linetype = factor(mu))) +
+  geom_line(size = 1.2) +
+  scale_color_manual(name = expression(mu), values = c("black", "red", "blue", "green")) +
+  scale_linetype_manual(name = expression(mu), values = 1:4) +
+  labs(x = "t", y = "Distribution function") +
+  theme_minimal(base_size = 14) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.title = element_text(size = 18),
+    legend.position = c(0.86, 0.2), 
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5),
+    axis.text = element_text(size = 14)
+  )
+
+# ------------
+# Skewness ---
+# ------------
+
+library(tidyverse)
+
+skewW <- function(a) {
+  (2 * gamma(1 + 1/a)^3 - 3 * gamma(1 + 1/a) * gamma(1 + 2/a) + gamma(1 + 3/a)) / 
+    (gamma(1 + 2/a) - gamma(1 + 1/a)^2)^(3/2)
+}
+
+skewG <- function(a) { 2 / sqrt(a) }
+
+alpha <- seq(1e-12, 10, length.out = 1000)
+
+data <- tibble(
+  alpha = alpha,
+  BE = map_dbl(alpha, skewBE),
+  W = map_dbl(alpha, skewW),
+  G = map_dbl(alpha, skewG)
+)
+
+data_long <- data %>%
+  pivot_longer(cols = -alpha, names_to = "Distribution", values_to = "Skewness")
+
+data_plot <- subset(data_long, is.finite(alpha) & is.finite(Skewness))
+
+ggplot(data_plot, aes(x = alpha, y = Skewness, color = Distribution, linetype = Distribution)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(values = c("BE" = "black", "W" = "red", "G" = "blue")) +
+  scale_linetype_manual(values = c("BE" = 1, "W" = 2, "G" = 3)) +
+  labs(
+    x = expression(alpha),
+    y = "Skewness",
+    color = NULL,
+    linetype = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  coord_cartesian(ylim = c(-1, 4)) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 17),
+    legend.position = c(0.87, 0.82),
+    legend.background = element_rect(fill = "white", color = "black", linewidth = 0.5)
+  )
+
+# ------------
+# Kurtosis ---
+# ------------
+
+kurtW <- function(a){
+  (gamma(1+4/a)-4*gamma(1+1/a)*gamma(1+3/a)+6*gamma(1+1/a)^2*gamma(1+2/a)-3*gamma(1+1/a)^4)/(gamma(1+2/a)-gamma(1+1/a)^2)^2
+} 
+
+kurtG <- function(a){ 6/a+3 }
+
+alpha <- seq(1e-12, 15, length.out = 1000)
+
+data <- tibble(
+  alpha = alpha,
+  BE = map_dbl(alpha, kurtBE),
+  W = map_dbl(alpha, kurtW),
+  G = map_dbl(alpha, kurtG)
+)
+
+data_long <- data %>%
+  pivot_longer(cols = -alpha, names_to = "Distribution", values_to = "Kurtosis")
+
+ggplot(data_long, aes(x = alpha, y = Kurtosis, color = Distribution, linetype = Distribution)) +
+  geom_line(size = 1.2) +
+  scale_color_manual(values = c("BE" = "black", "W" = "red", "G" = "blue")) +
+  scale_linetype_manual(values = c("BE" = 1, "W" = 2, "G" = 3)) +
+  labs(
+    x = expression(alpha),
+    y = "Kurtosis",
+    color = NULL, 
+    linetype = NULL
+  ) +
+  theme_minimal(base_size = 14) +
+  coord_cartesian(ylim = c(2, 15)) +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 17),
+    legend.position = c(0.87, 0.82), 
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5)
+  )
+
