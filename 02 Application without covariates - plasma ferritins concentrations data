@@ -1,0 +1,162 @@
+# =========================================================================
+# Application without covariates - plasma ferritins concentrations data ===
+# =========================================================================
+
+# install.packages("modeest")
+# install.packages("moments")
+# install.packages("goftest")
+# install.packages("ggplot2")
+
+# ----------------------------------------
+# Data and some descriptive statistics ---
+# ----------------------------------------
+
+x <- DAAG::ais$ferr
+
+min(x)# 8
+max(x)# 234
+modeest::mlv(x, method = "shorth")# 50.0198
+sd(x) # 47.50124
+moments::skewness(x)# 1.280584
+moments::kurtosis(x)# 4.420173
+
+# --------
+# Fits ---
+# --------
+
+compare_models(x)
+#         model parameter  estimate  std_error    logLik      AIC      BIC  DeltaAIC  DeltaBIC
+# 1          BE        mu 42.883748 2.66611113 -1029.164 2062.329 2068.945  0.000000  0.000000
+# 2          BE     sigma 41.802912 3.62674929 -1029.164 2062.329 2068.945  0.000000  0.000000
+# 3       Gamma     scale 26.433882 2.72219621 -1030.719 2065.438 2072.055  3.109923  3.109923
+# 4       Gamma     shape  2.908246 0.27440849 -1030.719 2065.438 2072.055  3.109923  3.109923
+# 5     Weibull     scale 86.821232 3.71605638 -1037.062 2078.123 2084.740 15.794498 15.794498
+# 6     Weibull     shape  1.741683 0.09094155 -1037.062 2078.123 2084.740 15.794498 15.794498
+# 7 Exponential     scale 76.876238 5.40899320 -1079.124 2160.248 2163.556 97.918971 94.610703
+
+# -------------------------
+# Goodness-of-fit tests ---
+# -------------------------
+
+goftest::ad.test(x,
+                 "pBE",
+                 mu = 42.883748,
+                 sigma = 41.802912)# An = 0.25437, p-value = 0.968
+
+goftest::cvm.test(x,
+                  "pBE",
+                  mu = 42.883748,
+                  sigma = 41.802912)# omega2 = 0.027821, p-value = 0.983
+
+goftest::ad.test(x,
+                 "pgamma",
+                 shape = 2.908246,
+                 scale = 26.433882)# An = 0.72818, p-value = 0.5356
+
+goftest::cvm.test(x,
+                  "pgamma",
+                  shape = 2.908246,
+                  scale = 26.433882)# omega2 = 0.1047, p-value = 0.5627
+
+goftest::ad.test(x,
+                 "pweibull",
+                 shape = 1.741683,
+                 scale = 86.821232)# An = 1.8109, p-value = 0.117
+
+goftest::cvm.test(x,
+                  "pweibull",
+                  shape = 1.741683,
+                  scale = 86.821232)# omega2 = 0.25188, p-value = 0.186
+
+goftest::ad.test(x,
+                 "pexp",
+                 rate = 1 / 76.876238)# An = 16.613, p-value = 2.97e-06
+
+goftest::cvm.test(x,
+                  "pexp",
+                  rate = 1 / 76.876238)# omega2 = 3.0041, p-value = 6.156e-08
+
+# ===========
+# Figures ===
+# ===========
+
+ library(ggplot2)
+
+# ------------------------------------------------------------
+# Histogram and boxplot of plasma ferritins concentrations ---
+# ------------------------------------------------------------
+
+ggplot(DAAG::ais, aes(x = ferr)) +
+ geom_histogram(aes(y = ..density..), bins = 12, fill = "lightblue", color = "black", alpha = 0.6) +
+ geom_boxplot(aes(y = 0.005), width = 0.005, fill = "firebrick3", color = "black", alpha = 0.7, outlier.size = 2) +
+ labs(x = "Plasma ferritins (ng/dl)", y = "Density function") +
+ theme_minimal() +
+ theme(
+    axis.title = element_text(size = 15),
+    axis.text = element_text(size = 12),
+    panel.border = element_rect(color = "black", fill = NA, size = 1),
+   ) +
+ coord_cartesian(ylim = c(0, max(density(DAAG::ais$ferr)$y) * 1.2), xlim = c(-10, 250))
+
+# --------------------
+# Fitted histogram ---
+# --------------------
+
+data <- x
+
+ggplot(data.frame(data), aes(x = data)) +
+  geom_histogram(
+    aes(y = ..density..),
+    bins = 12,
+    fill = "lightblue",
+    color = "black",
+    alpha = 0.5
+  ) +
+  stat_function(
+    fun = dexp,
+    args = list(rate = 1 / 76.876238),
+    aes(color = "E"),
+    size = 1,
+    xlim = c(1e-6, 240),
+    lty = 4
+  ) +
+  stat_function(
+    fun = dweibull,
+    args = list(shape = 1.741683, scale = 86.821232),
+    aes(color = "W"),
+    size = 1,
+    xlim = c(1e-6, 240),
+    lty = 3
+  ) +
+  stat_function(
+    fun = dgamma,
+    args = list(shape = 2.908246, scale = 26.433882),
+    aes(color = "G"),
+    size = 1,
+    xlim = c(1e-6, 240),
+    lty = 2
+  ) +
+  stat_function(
+    fun = dBE,
+    args = list(mu = 42.883748, sigma = 41.802912),
+    aes(color = "BE"),
+    size = 1,
+    xlim = c(1e-6, 240),
+    lty = 1
+  ) +
+  scale_color_manual(values = c("E" = "orange", "W" = "blue", "G" = "red", "BE" = "black")) +
+  labs(
+    x = "Plasma ferritins (ng/dl)",
+    y = "Density function",
+    color = "Distribution"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 17),
+    legend.position = c(0.87, 0.83),
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5)
+  )
+
