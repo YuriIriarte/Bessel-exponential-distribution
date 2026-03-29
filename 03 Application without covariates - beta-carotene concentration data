@@ -1,0 +1,154 @@
+# ==================================================================================
+# Application without considering covariates - beta-carotene concentrations data ===
+# ==================================================================================
+
+# install.packages("modeest")
+# install.packages("moments")
+# install.packages("goftest")
+# install.packages("ggplot2")
+
+# ----------------------------------------
+# Data and some descriptive statistics ---
+# ----------------------------------------
+
+datos <- read.table("bcarotene.r",h=T)
+x <- datos$v11
+
+min(x)# 214
+max(x)# 9642
+modeest::mlv(x, method = "shorth")# 1210
+sd(x) # 1473.887
+moments::skewness(x)# 1.606043
+moments::kurtosis(x)# 6.399165
+
+# --------
+# Fits ---
+# --------
+
+compare_models(x)
+#         model parameter    estimate    std_error    logLik      AIC      BIC   DeltaAIC   DeltaBIC
+# 1          BE        mu 1118.906323  62.68411492 -2672.295 5348.590 5356.095   0.000000   0.000000
+# 2          BE     sigma 1298.852379  88.96377096 -2672.295 5348.590 5356.095   0.000000   0.000000
+# 3       Gamma     scale  858.674040  71.24211476 -2676.614 5357.227 5364.732   8.637211   8.637211
+# 4       Gamma     shape    2.545323   0.19106943 -2676.614 5357.227 5364.732   8.637211   8.637211
+# 5     Weibull     scale 2455.449186  91.21142535 -2686.675 5377.351 5384.856  28.760656  28.760656
+# 6     Weibull     shape    1.607562   0.06653834 -2686.675 5377.351 5384.856  28.760656  28.760656
+# 7 Exponential     scale 2185.603175 123.14478814 -2737.239 5476.478 5480.230 127.887668 124.135095
+
+
+# -------------------------
+# Goodness-of-fit tests ---
+# -------------------------
+
+goftest::ad.test(x,
+                 "pBE",
+                 mu = 1118.906323,
+                 sigma = 1298.852379)# An = 0.15795, p-value = 0.9979
+
+goftest::cvm.test(x,
+                  "pBE",
+                  mu = 1118.906323,
+                  sigma = 1298.852379)# omega2 = 0.021249, p-value = 0.9957
+
+goftest::ad.test(x,
+                 "pgamma",
+                 shape = 2.545323,
+                 scale = 858.674040)# An = 0.85579, p-value = 0.4424
+
+goftest::cvm.test(x,
+                  "pgamma",
+                  shape = 2.545323,
+                  scale = 858.674040)# omega2 = 0.13317, p-value = 0.4454
+
+goftest::ad.test(x,
+                 "pweibull",
+                 shape = 1.607562,
+                 scale = 2455.449186)# An = 2.2967, p-value = 0.0635
+
+goftest::cvm.test(x,
+                  "pweibull",
+                  shape = 1.607562,
+                  scale = 2455.449186)# omega2 = 0.31559, p-value = 0.1222
+
+goftest::ad.test(x,
+                 "pexp",
+                 rate = 1 / 2185.603175)# An = 21.097, p-value = 1.905e-06
+
+goftest::cvm.test(x,
+                  "pexp",
+                  rate = 1 / 2185.603175)# omega2 = 3.6818, p-value = 1.978e-09
+
+# ===========
+# Figures ===
+# ===========
+
+ library(ggplot2)
+
+# -------------------------
+# Histogram and boxplot ---
+# -------------------------
+
+ggplot(datos, aes(x = v11)) +
+  geom_histogram(aes(y = ..density..), bins = 15, fill = "lightblue", color = "black", alpha = 0.6) +
+  geom_boxplot(aes(y = 2e-4), width = 2e-4, fill = "firebrick3", color = "black", alpha = 0.7, outlier.size = 2) +
+  labs(x = "Beta-carotene intake (mcg/day)", y = "Density function") +
+  theme_minimal() +
+  theme(
+     axis.title = element_text(size = 15),
+     axis.text = element_text(size = 12),
+     panel.border = element_rect(color = "black", fill = NA, size = 1),
+    ) +
+  coord_cartesian(ylim = c(0, max(density(x)$y) * 1.2))
+
+# --------------------
+# Fitted histogram ---
+# --------------------
+
+data <- x
+
+ggplot(data.frame(data), aes(x = data)) +
+  geom_histogram(aes(y = ..density..), 
+                bins = 15, 
+                fill = "lightblue", 
+                color = "black", 
+                alpha = 0.5) +
+  stat_function(fun = dexp, 
+               args = list(rate = 1/2185.603175), 
+               aes(color = "E"),  
+               size = 1, 
+               xlim = c(1e-6, 9650),
+               lty = 4) +
+  stat_function(fun = dweibull, 
+               args = list(shape = 1.607562, scale = 2455.449186), 
+               aes(color = "W"),  
+               size = 1, 
+               xlim = c(1e-6, 9650),
+               lty = 3) +
+  stat_function(fun = dgamma, 
+               args = list(shape = 2.545323, scale = 858.674040), 
+               aes(color = "G"),  
+               size = 1, 
+               xlim = c(1e-6, 9650),
+               lty = 2) +
+  stat_function(fun = dBE, 
+               args = list(mu = 1118.906323, sigma = 1298.852379), 
+               aes(color = "BE"),  
+               size = 1, 
+               xlim = c(1e-6, 9650),
+               lty = 1) +
+  scale_color_manual(values = c("E" = "orange", "W" = "blue", "G" = "red", "BE" = "black")) + # Asignar colores
+  labs(x = "Beta-carotene intake (mcg/day)", 
+       y = "Density function", 
+       color = "Distribution") + 
+  theme_minimal() +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 1.2),
+    axis.ticks = element_line(color = "black"),
+    axis.text = element_text(size = 12),
+    axis.title = element_text(size = 17),
+    legend.position = c(0.85, 0.8), 
+    legend.background = element_rect(fill = "white", color = "black", size = 0.5)
+  ) +
+ coord_cartesian(ylim = c(0, max(density(x)$y) * 1.2))
+
+
