@@ -1,6 +1,6 @@
-# =========================================================================
-# Application without covariates - plasma ferritins concentrations data ===
-# =========================================================================
+# =======================================================================
+# Application without covariates - plasma ferritin concentration data ===
+# =======================================================================
 
 # install.packages("modeest")
 # install.packages("moments")
@@ -82,9 +82,9 @@ goftest::cvm.test(x,
 
  library(ggplot2)
 
-# ------------------------------------------------------------
-# Histogram and boxplot of plasma ferritins concentrations ---
-# ------------------------------------------------------------
+# -------------------------
+# Histogram and boxplot ---
+# -------------------------
 
 ggplot(DAAG::ais, aes(x = ferr)) +
  geom_histogram(aes(y = ..density..), bins = 12, fill = "lightblue", color = "black", alpha = 0.6) +
