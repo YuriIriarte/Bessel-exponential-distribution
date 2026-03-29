@@ -1,6 +1,6 @@
-# ==================================================================================
-# Application without considering covariates - beta-carotene concentrations data ===
-# ==================================================================================
+# =================================================================================
+# Application without considering covariates - beta-carotene concentration data ===
+# =================================================================================
 
 # install.packages("modeest")
 # install.packages("moments")
