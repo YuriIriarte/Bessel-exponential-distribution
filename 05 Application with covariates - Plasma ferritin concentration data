@@ -1,0 +1,169 @@
+# ====================================================================
+# Application with covariates - Plasma ferritin concentration data ===
+# ====================================================================
+
+# -----------
+# Dataset ---
+# -----------
+
+resp <- DAAG::ais$ferr                  # plasma ferritins, ng dl^{-1}
+cov1 <- ifelse(DAAG::ais$sex=="f",1,0)  # a factor with levels: f, female. m, male
+cov2 <- DAAG::ais$ht/100                # height, meters
+cov3 <- DAAG::ais$wt                    # weight, kg
+
+# --------
+# Fits ---
+# --------
+
+X <- model.matrix(~ cov1 + cov2 + cov3)
+
+fitBEreg <- fitBE_regression(
+  y = resp, 
+  X_mu = X, 
+  X_sigma = X, 
+  start = c(4.5,0,0,0,4.5,0,0,0), 
+  n_starts = 10, 
+  jitter_sd = 0.10, 
+  seed = 123)
+}
+summary(fitBEreg)
+# Summary of BE regression model
+# ---------------------------------
+# Log-likelihood: -997.471 
+# AIC: 2010.941 
+# BIC: 2037.407 
+# Convergence code: 0 
+#
+#  Parameter Estimate Std.Error z.value p.value
+#     beta_0    8.830     1.224   7.213   0.000
+#     beta_1   -0.574     0.117  -4.905   0.000
+#     beta_2   -3.406     0.749  -4.549   0.000
+#     beta_3    0.020     0.004   4.807   0.000
+#       nu_0    3.688     2.463   1.497   0.134
+#       nu_1   -0.656     0.221  -2.964   0.003
+#       nu_2    0.272     1.543   0.176   0.860
+#       nu_3   -0.005     0.010  -0.538   0.590
+
+fitRGAreg <- fitRGA_regression(
+  y = resp,
+  X_mu = X,
+  X_sigma = X,
+  start = c(7,0,0,0,3,0,0,0),
+  n_starts = 10,
+  jitter_sd = 0.05,
+  seed = 123
+)
+
+summary(fitRGAreg)
+# Summary of RGA regression model
+# ---------------------------------
+# Log-likelihood: -998.948 
+# AIC: 2013.896 
+# BIC: 2040.362 
+# Convergence code: 0 
+#
+#  Parameter Estimate Std.Error z.value p.value
+#     beta_0    7.853     0.924   8.499   0.000
+#     beta_1   -0.577     0.089  -6.500   0.000
+#     beta_2   -2.365     0.585  -4.046   0.000
+#     beta_3    0.013     0.004   3.519   0.000
+#       nu_0    3.916     2.661   1.472   0.141
+#       nu_1    0.119     0.237   0.501   0.616
+#       nu_2   -2.374     1.665  -1.426   0.154
+#       nu_3    0.022     0.011   2.103   0.035
+
+
+# ---------------------
+# Residual analysis ---
+# ---------------------
+
+diagnostics_BE_regression(fitBEreg)
+#    Residual             Test Statistic p.value
+# 1  Quantile Anderson-Darling    0.1934  0.9921
+# 2  Quantile Cramer-von Mises    0.0268  0.9857
+# 3 Cox-Snell Anderson-Darling    0.1934  0.9921
+# 4 Cox-Snell Cramer-von Mises    0.0268  0.9857
+
+diagnostics_RGA_regression(fitRGAreg)
+#    Residual             Test Statistic p.value
+# 1  Quantile Anderson-Darling    0.5563  0.6900
+# 2  Quantile Cramer-von Mises    0.0974  0.5981
+# 3 Cox-Snell Anderson-Darling    0.5563  0.6900
+# 4 Cox-Snell Cramer-von Mises    0.0974  0.5981
+
+# -----------
+# Figures ---
+# -----------
+
+resBEquantile <- residuals.BE_regression(fitBEreg, type = "quantile")
+
+n  <- length(resBEquantile)
+xq <- qnorm(ppoints(n))
+yq <- sort(resBEquantile)
+df_BE <- data.frame(x = xq, y = yq)
+
+set.seed(123)
+nsim <- 2000
+alpha <- 0.05
+sim_mat <- replicate(nsim, sort(rnorm(n)))
+lower <- apply(sim_mat, 1, quantile, probs = alpha/2)
+upper <- apply(sim_mat, 1, quantile, probs = 1 - alpha/2)
+med <- apply(sim_mat, 1, median)
+
+env_BE <- data.frame(x = xq, lower = lower, upper = upper, med = med)
+
+ggplot(df_BE, aes(x = x, y = y)) +
+  geom_abline(slope = 1, intercept = 0, linewidth = 0.6) +
+  geom_point(shape = 1, size = 1, stroke = 1, col = "black") +   # cruces (pch=4)
+  geom_ribbon(data = env_BE, aes(x = x, ymin = lower, ymax = upper),
+              inherit.aes = FALSE, alpha = 0.30, fill = "skyblue") +
+  labs(
+    title = "(a) BE model",
+    x = "Theoretical quantiles",
+    y = "Sample quantiles"
+  ) +
+  coord_equal() +
+   theme_minimal() +
+   theme(
+     axis.title = element_text(size = 15),
+     axis.text  = element_text(size = 12),
+     panel.border = element_rect(color = "black", fill = NA, size = 1),
+     legend.position = c(0.86, 0.81),
+     legend.background = element_rect(fill = alpha("white", 0.5))
+)
+
+resRGAquantile <- residuals.RGA_regression(fitRGAreg, type = "quantile")
+
+n  <- length(resRGAquantile)
+xq <- qnorm(ppoints(n))
+yq <- sort(resRGAquantile)
+df_RGA <- data.frame(x = xq, y = yq)
+
+set.seed(123)
+nsim  <- 2000
+alpha <- 0.05
+sim_mat <- replicate(nsim, sort(rnorm(n)))
+lower  <- apply(sim_mat, 1, quantile, probs = alpha/2)
+upper  <- apply(sim_mat, 1, quantile, probs = 1 - alpha/2)
+med    <- apply(sim_mat, 1, median)
+
+env_RGA <- data.frame(x = xq, lower = lower, upper = upper, med = med)
+
+ggplot(df_RGA, aes(x = x, y = y)) +
+  geom_abline(slope = 1, intercept = 0, linewidth = 0.6) +
+  geom_point(shape = 1, size = 1, stroke = 1, col = "black") +   # cruces (pch=4)
+  geom_ribbon(data = env_RGA, aes(x = x, ymin = lower, ymax = upper),
+              inherit.aes = FALSE, alpha = 0.30, fill = "firebrick3") +
+  labs(
+    title = "(b) G model",
+    x = "Theoretical quantiles",
+    y = "Sample quantiles"
+  ) +
+  coord_equal() +
+   theme_minimal() +
+   theme(
+     axis.title = element_text(size = 15),
+     axis.text  = element_text(size = 12),
+     panel.border = element_rect(color = "black", fill = NA, size = 1)
+)
+
