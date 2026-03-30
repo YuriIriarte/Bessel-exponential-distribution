@@ -1,6 +1,6 @@
-# =======================================================================================
-# Application without considering covariates - data on dietary beta-carotene consumed ===
-# =======================================================================================
+# ==================================================================================
+# Application without considering covariates - Dietary beta-carotene intake data ===
+# ==================================================================================
 
 # install.packages("modeest")
 # install.packages("moments")
