@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19402357.svg)](https://doi.org/10.5281/zenodo.19402357)
 # Bessel-exponential-distribution
 
 This repository provides an implementation of the Bessel-Exponential (BE) distribution, including tools for density evaluation, distributional properties, random generation, and maximum likelihood estimation, both with and without covariates.
