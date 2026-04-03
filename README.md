@@ -38,7 +38,7 @@ The package requires:
 
 ---
 
-### Install from source file (recommended for reproducibility)
+### Install from source file
 
 This option ensures full reproducibility of the results reported in the associated manuscript.
 
