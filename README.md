@@ -44,7 +44,6 @@ This option ensures full reproducibility of the results reported in the associat
 ```r
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
 
----
 
 ## 📖 Citation
 
