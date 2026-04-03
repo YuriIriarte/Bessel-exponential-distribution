@@ -45,8 +45,8 @@ If you use this repository or the associated R package in your research, please 
 
 ```bibtex
 @article{Iriarte2026BE,
-  author  = {Yuri A. Iriarte},
-  title   = {Bessel-Exponential Distribution: Theory and Applications},
+  author  = {Cortes, I and Iriarte, YA and Reyes, J and Guerrero-Henriquez, J},
+  title   = {Modal-Dispersion Regression for Positive Skewed Data with Application to Nutritional Health Studies},
   year    = {2026},
   note    = {Under review}
 }
@@ -55,7 +55,7 @@ If you use this repository or the associated R package in your research, please 
 
 ```bibtex
 @software{Iriarte2026BEsoftware,
-  author  = {Yuri A. Iriarte},
+  author  = {Iriarte, YA},
   title   = {Bessel-Exponential Distribution R Package},
   year    = {2026},
   doi     = {10.5281/zenodo.19402357},
