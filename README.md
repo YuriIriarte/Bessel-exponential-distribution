@@ -43,3 +43,17 @@ This option ensures full reproducibility of the results reported in the associat
 
 ```r
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
+
+## 📖 Citation
+
+If you use this repository or the associated R package in your research, please cite:
+
+### 📄 Associated article
+
+```bibtex
+@article{Iriarte2026BE,
+  author  = {Yuri A. Iriarte},
+  title   = {Bessel-Exponential Distribution: Theory and Applications},
+  year    = {2026},
+  note    = {Under review}
+}
