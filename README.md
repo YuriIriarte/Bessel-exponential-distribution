@@ -37,15 +37,9 @@ The package requires:
 
 ---
 
-### Install from source file
+### Install from source file (recommended for reproducibility)
 
 This option ensures full reproducibility of the results reported in the associated manuscript.
 
 ```r
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
-
-# Alternatively, you can install the latest version from GitHub:
-
-```r
-install.packages("remotes")
-remotes::install_github("YuriIriarte/Bessel-exponential-distribution")
