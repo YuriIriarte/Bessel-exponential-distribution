@@ -28,7 +28,7 @@ The repository also contains the scripts used in the simulation studies and real
 
 ## ⚙️ Installation
 
-´´´r
+# Install from source file
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
 
 # Or install directly from GitHub
