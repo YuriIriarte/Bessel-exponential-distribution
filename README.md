@@ -29,15 +29,6 @@ The repository also contains the scripts used in the simulation studies and real
 
 ## ⚙️ Installation
 
-### Requirements
-
-The package requires:
-
-- R (>= 4.0.0)
-- Recommended: the `remotes` package (for GitHub installation)
-
----
-
 ### Install from source file
 
 This option ensures full reproducibility of the results reported in the associated manuscript.
@@ -60,3 +51,11 @@ If you use this repository or the associated R package in your research, please 
   note    = {Under review}
 }
 
+```bibtex
+@software{Iriarte2026BEsoftware,
+  author  = {Yuri A. Iriarte},
+  title   = {Bessel-Exponential Distribution R Package},
+  year    = {2026},
+  doi     = {10.5281/zenodo.19402357},
+  url     = {https://github.com/YuriIriarte/Bessel-exponential-distribution}
+}
