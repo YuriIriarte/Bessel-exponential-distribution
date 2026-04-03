@@ -37,6 +37,7 @@ The package requires:
 
 ---
 
+```markdown
 ### Install from source file (recommended for reproducibility)
 
 This option ensures full reproducibility of the results reported in the associated manuscript.
