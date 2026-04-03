@@ -50,7 +50,10 @@ If you use this repository or the associated R package in your research, please 
   year    = {2026},
   note    = {Under review}
 }
+```
+### 💻 Software 
 
+```bibtex
 @software{Iriarte2026BEsoftware,
   author  = {Yuri A. Iriarte},
   title   = {Bessel-Exponential Distribution R Package},
