@@ -54,10 +54,10 @@ If you use this repository or the associated R package in your research, please 
 ### 💻 Software 
 
 ```bibtex
-@software{Iriarte2026BEsoftware,
-  author  = {Iriarte, YA},
-  title   = {Bessel-Exponential Distribution R Package},
-  year    = {2026},
-  doi     = {10.5281/zenodo.19402357},
-  url     = {https://github.com/YuriIriarte/Bessel-exponential-distribution}
+@misc{Iriarte2026BEsoftware,
+  author       = {Iriarte, YA},
+  title        = {Bessel-Exponential Distribution R Package},
+  year         = {2026},
+  howpublished = {\url{https://github.com/YuriIriarte/Bessel-exponential-distribution}},
+  doi          = {10.5281/zenodo.19402357}
 }
