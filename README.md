@@ -44,9 +44,4 @@ This option ensures full reproducibility of the results reported in the associat
 ```r
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
 
-## Citation
 
-If you use this repository in your research, please cite:
-
-Iriarte, Y. A. (2026). *Bessel-Exponential distribution R package*.  
-Zenodo. https://doi.org/10.5281/zenodo.19402357
