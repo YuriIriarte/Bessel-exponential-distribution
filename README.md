@@ -28,12 +28,21 @@ The repository also contains the scripts used in the simulation studies and real
 
 ## ⚙️ Installation
 
-# Install from source file
-install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
+### Requirements
 
-# Or install directly from GitHub
-# install.packages("remotes")
-remotes::install_github("YuriIriarte/Bessel-exponential-distribution")
+The package requires:
+
+- R (>= 4.0.0)
+- Recommended: the `remotes` package (for GitHub installation)
+
+---
+
+### Install from source file (recommended for reproducibility)
+
+This option ensures full reproducibility of the results reported in the associated manuscript.
+
+```r
+install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
 
 ## Citation
 
