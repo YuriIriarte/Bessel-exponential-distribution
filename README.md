@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19402357.svg)](https://doi.org/10.5281/zenodo.19402357)
+<img width="940" height="436" alt="image" src="https://github.com/user-attachments/assets/9ced5117-4f84-49f2-93d9-710d90f13c64" />[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19402357.svg)](https://doi.org/10.5281/zenodo.19402357)
 # Bessel-exponential-distribution
 
 This repository provides an implementation of the Bessel-Exponential (BE) distribution, including tools for density evaluation, distributional properties, random generation, and maximum likelihood estimation, both with and without covariates.
@@ -37,11 +37,15 @@ The package requires:
 
 ---
 
-### Install from source file (recommended for reproducibility)
+### Install from source file
 
 This option ensures full reproducibility of the results reported in the associated manuscript.
 
 ```r
 install.packages("besselexp_0.1.0.tar.gz", repos = NULL, type = "source")
 
+Alternatively, you can install the latest version from GitHub:
 
+```r
+install.packages("remotes")
+remotes::install_github("YuriIriarte/Bessel-exponential-distribution")
